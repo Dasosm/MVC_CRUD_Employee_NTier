@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Infrastructure.RepoModels.Employee>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        td:last-child {
+            text-align: center;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+
+<body>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateOfBirth)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Department)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Designation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BasicSalary)
+                </th>
+
+                <th>Dearness Allowance</th>
+                <th>Conveyance Allowance</th>
+                <th>House Rent Allowance</th>
+                <th>Total Salary</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var DearnessAllowance = item.BasicSalary * 0.4m;
+                var ConveyanceAllowance = Math.Min(DearnessAllowance * 0.1m, 250);
+                var HouseRentAllowance = Math.Max(item.BasicSalary * 0.25m, 1500);
+                var GrossSalary = item.BasicSalary + DearnessAllowance + ConveyanceAllowance + HouseRentAllowance;
+
+                var pt = GrossSalary <= 3000 ? 100 : (GrossSalary <= 6000 ? 150 : 200);
+                var TotalSalary = item.BasicSalary + DearnessAllowance + ConveyanceAllowance + HouseRentAllowance - pt;
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.Gender)*@
+                        @if (item.Gender == true)
+                        {
+                            <text>Male</text>
+                        }
+                        else
+                        {
+                            <text>Female</text>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Designation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BasicSalary)
+                    </td>
+                    <td>@DearnessAllowance</td>
+                    <td>@ConveyanceAllowance</td>
+                    <td>@HouseRentAllowance</td>
+                    <td>@TotalSalary</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { EmployeeCode = item.EmployeeCode }) |
+                        @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                        @Html.ActionLink("Delete", "Delete", new { EmployeeCode = item.EmployeeCode })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
